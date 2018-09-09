@@ -9,8 +9,9 @@ from libs.hashutils import make_pw_hash,check_pw_hash
 def require_login():
     if 'bootstrap' not in session:
         session['bootstrap'] = False
-    print(request.endpoint)
     allowed_routes = ['login','register','bootstrap']
+    print(request.endpoint)
+    print(session['back'])
     if request.endpoint not in allowed_routes and 'email' not in session:
         return redirect('/login')
 
@@ -34,7 +35,7 @@ def index():
 @app.route('/new_post', methods=['POST','GET'])
 def new_post():
     back = session['back']
-    session['back'] = request.endpoint
+    session['back'] = "new_post"
     title = ""
     body = ""
     id = ""
@@ -110,7 +111,7 @@ def user_blogs():
 
 @app.route("/users", methods=['POST','GET'])
 def users():
-    session['back'] = request.endpoint
+    session['back'] = "users"
     blogs = Blog.get_owners()
     users = []
     for blog in blogs:
@@ -161,7 +162,7 @@ def logout():
 @app.route('/login', methods=['POST','GET'])
 def login():
     email=''
-    session['back'] = request.endpoint
+    session['back'] = "login"
     if request.method == "POST":
         email = request.form['email']
         password = request.form['password']
@@ -183,14 +184,11 @@ def login():
 
 @app.route('/bootstrap', methods=['POST','GET'])
 def bootstrap():
-    try:
-        if session['bootstrap']:
-            session['bootstrap'] = False
-        else:
-            session['bootstrap'] = True
-    except:
+    if session['bootstrap']:
         session['bootstrap'] = False
-    print(session['back'])
+    else:
+        session['bootstrap'] = True
+    
     return redirect(session['back'])
 
 if __name__ == '__main__':
