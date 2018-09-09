@@ -10,8 +10,6 @@ def require_login():
     if 'bootstrap' not in session:
         session['bootstrap'] = False
     allowed_routes = ['login','register','bootstrap']
-    print(request.endpoint)
-    print(session['back'])
     if request.endpoint not in allowed_routes and 'email' not in session:
         return redirect('/login')
 
@@ -26,7 +24,6 @@ def index():
         if blogs.has_next else None
     prev_url = url_for('index',page=blogs.prev_num) \
         if blogs.has_prev else None
-    print(blogs)
     if not blogs.has_prev and not blogs.has_next:
         page = None
         
@@ -116,7 +113,6 @@ def users():
     users = []
     for blog in blogs:
         users.append(User.get_user(None,blog.owner_id))
-        print(str(users[0].email))
     
     return render_template("users.html",users=users)
 
